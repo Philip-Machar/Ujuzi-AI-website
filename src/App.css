@@ -40,3 +40,10 @@
 .read-the-docs {
   color: #888;
 }
+
+.drop-shadow-glow {
+  text-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+}
+.shadow-glow {
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+}
