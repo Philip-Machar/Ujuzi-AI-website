@@ -22,18 +22,27 @@ const howItWorksSteps = [
 export default function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#1a1f2e] to-[#252a3a] text-white font-sans flex flex-col">
-      {/* Top Navigation Bar */}
-      <header className="sticky top-0 z-10 bg-[rgba(26,31,46,0.9)] backdrop-blur border-b border-white/10 px-8 py-4 flex items-center justify-between shadow-md">
-        <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#00ff88] drop-shadow-glow">Ujuzi AI</h1>
-        <span className="hidden md:inline text-[#8b9bb4] font-medium text-base">AI for Everyone. Everywhere.</span>
+      {/* Top Navigation Bar - Beautiful, Modern */}
+      <header className="sticky top-0 z-20 bg-[rgba(26,31,46,0.95)] backdrop-blur-xl border-b border-white/10 px-8 py-4 flex items-center justify-between shadow-lg">
+        <div className="flex items-center gap-3">
+          <span className="inline-block w-3 h-3 rounded-full bg-[#00ff88] animate-pulse shadow-glow"></span>
+          <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#00ff88] drop-shadow-glow">Ujuzi AI</h1>
+        </div>
+        <span className="hidden md:inline text-[#8b9bb4] font-medium text-base border-b-2 border-[#00ff88] pb-1 px-3 rounded transition-all duration-200">AI for Everyone. Everywhere.</span>
       </header>
 
-      {/* Hero Section */}
-      <section className="flex-1 flex flex-col items-center justify-center text-center px-4 pt-16 md:pt-24 pb-8 md:pb-16" style={{background: "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0)"}}>
-        <h2 className="text-3xl md:text-5xl font-extrabold mb-4 leading-tight text-white drop-shadow-glow">Bridging the Digital Divide in Africa</h2>
-        <p className="max-w-2xl mx-auto text-lg md:text-2xl text-[#8b9bb4] mb-6 font-medium">Ujuzi AI is revolutionizing access to intelligence by delivering the power of AI to any phone, in any local language, without needing internet, smartphones, or even literacy.</p>
-        <blockquote className="italic text-[#00ff88] text-lg md:text-xl font-semibold mb-6">“The Future of AI is Not Just Online”</blockquote>
-        <p className="max-w-2xl mx-auto text-base md:text-lg text-[#8b9bb4] mb-8">Whether you're a farmer, a parent, or a student in a rural village—Ujuzi AI answers your questions in Swahili, Sheng, or your local dialect. Just send a text or make a call using a basic 2G feature phone, and our voice- or SMS-powered assistant responds instantly—no data bundles required.</p>
+      {/* Hero Section - Beautiful, Modern */}
+      <section className="relative flex-1 flex flex-col items-center justify-center text-center px-4 pt-20 md:pt-32 pb-12 md:pb-20 overflow-hidden" style={{background: "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0)"}}>
+        {/* Animated mesh accent */}
+        <div className="absolute inset-0 pointer-events-none z-0">
+          <div className="absolute left-1/2 top-0 w-[600px] h-[600px] -translate-x-1/2 -translate-y-1/3 bg-[conic-gradient(from_0deg_at_50%_50%,rgba(0,255,136,0.12)_0deg,transparent_60deg,transparent_300deg,rgba(0,255,136,0.12)_360deg)] rounded-full blur-3xl animate-spin-slow" style={{animationDuration: '16s'}}></div>
+        </div>
+        <div className="relative z-10">
+          <h2 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight text-white drop-shadow-glow">Bridging the Digital Divide in Africa</h2>
+          <p className="max-w-2xl mx-auto text-lg md:text-2xl text-[#8b9bb4] mb-6 font-medium">Ujuzi AI is revolutionizing access to intelligence by delivering the power of AI to any phone, in any local language, without needing internet, smartphones, or even literacy.</p>
+          <blockquote className="italic text-[#00ff88] text-xl md:text-2xl font-semibold mb-6">“The Future of AI is Not Just Online”</blockquote>
+          <p className="max-w-2xl mx-auto text-base md:text-lg text-[#8b9bb4] mb-8">Whether you're a farmer, a parent, or a student in a rural village—Ujuzi AI answers your questions in Swahili, Sheng, or your local dialect. Just send a text or make a call using a basic 2G feature phone, and our voice- or SMS-powered assistant responds instantly—no data bundles required.</p>
+        </div>
       </section>
 
       {/* Impact Cards */}
@@ -71,9 +80,6 @@ export default function App() {
           <h4 className="text-lg font-semibold text-[#00ff88] mb-2">Access AI. Without Changing Your Phone.</h4>
           <div className="flex flex-col gap-2 mt-2">
             <span className="text-[#8b9bb4] text-base md:text-lg">Works on any device—from feature phones to smartphones</span>
-            <span className="text-[#8b9bb4] text-base md:text-lg">Affordable</span>
-            <span className="text-[#8b9bb4] text-base md:text-lg">Instant</span>
-            <span className="text-[#8b9bb4] text-base md:text-lg">Inclusive</span>
           </div>
         </div>
       </section>
@@ -113,8 +119,13 @@ export default function App() {
       </section>
 
       {/* Footer */}
-      <footer className="text-center text-[#6b7280] text-sm py-6 border-t border-white/10 mt-auto">
-        &copy; {new Date().getFullYear()} Ujuzi AI. All rights reserved.
+      <footer className="text-center text-[#6b7280] text-sm py-6 border-t border-white/10 mt-auto flex flex-col items-center gap-2">
+        <div className="flex flex-col md:flex-row gap-2 md:gap-6 items-center justify-center mb-1">
+          <a href="tel:+254795568537" className="hover:text-[#00ff88] transition-colors duration-150">📞 +254795568537</a>
+          <span className="hidden md:inline">|</span>
+          <a href="mailto:philipmachar788@gmail.com" className="hover:text-[#00ff88] transition-colors duration-150">✉ philipmachar788@gmail.com</a>
+        </div>
+        <div>&copy; {new Date().getFullYear()} Ujuzi AI. All rights reserved.</div>
       </footer>
     </div>
   );
