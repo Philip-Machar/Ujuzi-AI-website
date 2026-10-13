@@ -1,131 +1,368 @@
-import React from "react";
+import { useState } from "react";
 import "./App.css";
 
-const howItWorksSteps = [
+const EMAIL = "philipmachar788@gmail.com";
+const PHONE_DISPLAY = "+254 795 568 537";
+const PHONE_LINK = "+254795568537";
+
+const conversations = [
   {
-    icon: "📱",
-    title: "Connect",
-    description: "SMS or call our Ujuzi AI line."
+    id: "farming",
+    label: "Farming",
+    ask: "Ninawezaje kuboresha mavuno yangu ya mahindi msimu huu?",
+    answer:
+      "Tumia mbegu bora, panda kwa nafasi inayofaa, na kagua mimea mara kwa mara ili kugundua wadudu mapema.",
+    english:
+      "How can I improve my maize harvest this season? Use quality seed, space your plants correctly and inspect them often to catch pests early.",
   },
   {
-    icon: "💬",
-    title: "Ask",
-    description: "Ask your question in Swahili, Sheng, or local language."
+    id: "learning",
+    label: "Learning",
+    ask: "Eleza usanisinuru kwa maneno rahisi.",
+    answer:
+      "Ni jinsi mimea hutengeneza chakula chake kwa kutumia mwanga wa jua, maji na hewa ya kaboni dayoksaidi.",
+    english:
+      "Explain photosynthesis simply. It is how plants make their food using sunlight, water and carbon dioxide.",
   },
   {
-    icon: "⚡",
-    title: "Get Answer",
-    description: "Instantly receive an AI-powered answer—voice or text."
-  }
+    id: "careers",
+    label: "Careers",
+    ask: "Nifanyeje CV nzuri ya kazi yangu ya kwanza?",
+    answer:
+      "Weka maelezo yako, elimu, ujuzi na uzoefu kwenye ukurasa mmoja. Kuwa mfupi na wazi.",
+    english:
+      "How do I write a good CV for my first job? Put your details, education, skills and experience on one page. Keep it short and clear.",
+  },
+  {
+    id: "health",
+    label: "Health",
+    ask: "Nifanye nini kujikinga na malaria?",
+    answer:
+      "Lala kwenye chandarua kilichotiwa dawa na ondoa maji yaliyosimama karibu na nyumba. Ukipata homa, nenda kituo cha afya.",
+    english:
+      "How can I protect myself from malaria? Sleep under a treated net and clear standing water near your home. If you get a fever, visit a health facility.",
+  },
+];
+
+const steps = [
+  {
+    title: "Send a text",
+    text: "Write your question in Swahili, Sheng or another supported language and send it as a normal SMS.",
+  },
+  {
+    title: "We receive it",
+    text: "The message is routed to our service through the Africa's Talking SMS network.",
+  },
+  {
+    title: "AI prepares an answer",
+    text: "A language model understands the question and writes a clear, short reply in the same language.",
+  },
+  {
+    title: "Get a reply by SMS",
+    text: "The answer arrives on the same phone, in the same thread. No app and no mobile data.",
+  },
+];
+
+const icons = {
+  leaf: "M5 19c0-9 5-14 14-14 0 9-5 14-14 14zM5 19l8-8",
+  book: "M4 5.5A1.5 1.5 0 0 1 5.5 4H20v14H5.5A1.5 1.5 0 0 0 4 19.5v-14zM4 19.5A1.5 1.5 0 0 0 5.5 21H20",
+  briefcase: "M4 8h16v11H4zM9 8V5h6v3",
+  heart: "M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z",
+  phone: "M8 3h8a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zM11 18h2",
+  signal: "M5 20v-4M10 20v-8M15 20V8M20 20V4",
+  lang: "M4 6h9M8.5 4v2M6 6c.6 3 2.8 5.5 6 7M12 6c-.8 3.2-3.500 5.800-7.500 7M13 20l4-9 4 9M14.500 17h5",
+  arrow: "M5 12h14m-6-6 6 6-6 6",
+};
+
+function Icon({ name, size = 22 }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d={icons[name]} />
+    </svg>
+  );
+}
+
+function Logo({ light = false }) {
+  return (
+    <a className={`logo ${light ? "logo-light" : ""}`} href="#top" aria-label="Ujuzi AI home">
+      <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true">
+        <rect width="32" height="32" rx="8" fill={light ? "#fff" : "#0B4A37"} />
+        <path
+          fill={light ? "#0B4A37" : "#fff"}
+          d="M9 10.5C9 9.1 10.1 8 11.5 8h9c1.4 0 2.5 1.1 2.5 2.5v6c0 1.4-1.1 2.5-2.5 2.5h-5L11.5 22v-3C10.1 19 9 17.9 9 16.5z"
+        />
+        <circle cx="24" cy="8" r="3.2" fill="#F5B82E" />
+      </svg>
+      <span>Ujuzi AI</span>
+    </a>
+  );
+}
+
+function Phone({ convo }) {
+  return (
+    <div className="phone" role="img" aria-label="Example SMS conversation with Ujuzi AI">
+      <div className="phone-bar">
+        <span className="phone-avatar">U</span>
+        <div>
+          <strong>Ujuzi AI</strong>
+          <span>Text message</span>
+        </div>
+      </div>
+      <div className="phone-thread" key={convo.id}>
+        <div className="bubble bubble-out">{convo.ask}</div>
+        <div className="bubble bubble-in">{convo.answer}</div>
+        <p className="translation">
+          <span>In English</span>
+          {convo.english}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+const faqs = [
+  {
+    q: "Does the person asking need internet or a smartphone?",
+    a: "No. Questions and answers travel as standard SMS, so any phone that can send and receive text messages can use the service.",
+  },
+  {
+    q: "Which languages are supported?",
+    a: "Ujuzi AI is built for Swahili and Sheng, and can respond in other supported languages. We are expanding coverage over time.",
+  },
+  {
+    q: "Is the health information medical advice?",
+    a: "No. Answers on health are general information only and are not a substitute for a qualified health professional.",
+  },
 ];
 
 export default function App() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [active, setActive] = useState(conversations[0]);
+  const close = () => setMenuOpen(false);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1a1f2e] to-[#252a3a] text-white font-sans flex flex-col">
-      {/* Top Navigation Bar - Beautiful, Modern */}
-      <header className="sticky top-0 z-20 bg-[rgba(26,31,46,0.95)] backdrop-blur-xl border-b border-white/10 px-8 py-4 flex items-center justify-between shadow-lg">
-        <div className="flex items-center gap-3">
-          <span className="inline-block w-3 h-3 rounded-full bg-[#00ff88] animate-pulse shadow-glow"></span>
-          <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#00ff88] drop-shadow-glow">Ujuzi AI</h1>
+    <div id="top">
+      <header className="header">
+        <div className="container header-inner">
+          <Logo />
+          <button
+            className="menu-btn"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-expanded={menuOpen}
+            aria-label="Toggle navigation"
+          >
+            <span /><span />
+          </button>
+          <nav className={`nav ${menuOpen ? "nav-open" : ""}`}>
+            <a href="#how" onClick={close}>How it works</a>
+            <a href="#use-cases" onClick={close}>Use cases</a>
+            <a href="#roadmap" onClick={close}>Roadmap</a>
+            <a href="#faq" onClick={close}>FAQ</a>
+            <a className="btn btn-primary btn-sm" href="#contact" onClick={close}>Contact us</a>
+          </nav>
         </div>
-        <span className="hidden md:inline text-[#8b9bb4] font-medium text-base border-b-2 border-[#00ff88] pb-1 px-3 rounded transition-all duration-200">AI for Everyone. Everywhere.</span>
       </header>
 
-      {/* Hero Section - Beautiful, Modern */}
-      <section className="relative flex-1 flex flex-col items-center justify-center text-center px-4 pt-20 md:pt-32 pb-12 md:pb-20 overflow-hidden" style={{background: "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0)"}}>
-        {/* Animated mesh accent */}
-        <div className="absolute inset-0 pointer-events-none z-0">
-          <div className="absolute left-1/2 top-0 w-[600px] h-[600px] -translate-x-1/2 -translate-y-1/3 bg-[conic-gradient(from_0deg_at_50%_50%,rgba(0,255,136,0.12)_0deg,transparent_60deg,transparent_300deg,rgba(0,255,136,0.12)_360deg)] rounded-full blur-3xl animate-spin-slow" style={{animationDuration: '16s'}}></div>
-        </div>
-        <div className="relative z-10">
-          <h2 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight text-white drop-shadow-glow">Bridging the Digital Divide in Africa</h2>
-          <p className="max-w-2xl mx-auto text-lg md:text-2xl text-[#8b9bb4] mb-6 font-medium">Ujuzi AI is revolutionizing access to intelligence by delivering the power of AI to any phone, in any local language, without needing internet, smartphones, or even literacy.</p>
-          <blockquote className="italic text-[#00ff88] text-xl md:text-2xl font-semibold mb-6">“The Future of AI is Not Just Online”</blockquote>
-          <p className="max-w-2xl mx-auto text-base md:text-lg text-[#8b9bb4] mb-8">Whether you're a farmer, a parent, or a student in a rural village—Ujuzi AI answers your questions in Swahili, Sheng, or your local dialect. Just send a text or make a call using a basic 2G feature phone, and our voice- or SMS-powered assistant responds instantly—no data bundles required.</p>
-        </div>
-      </section>
-
-      {/* Impact Cards */}
-      <section className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 px-4 py-8 md:py-12">
-        <div className="bg-[#252a3a] rounded-2xl p-8 flex flex-col items-center border border-white/10 shadow-lg hover:shadow-xl transition-shadow duration-200">
-          <div className="w-12 h-12 mb-4 flex items-center justify-center rounded-full bg-[#00ff88]/10">
-            <span className="text-2xl" role="img" aria-label="Agriculture">🌾</span>
-          </div>
-          <h3 className="text-lg md:text-xl font-bold mb-2 text-[#00ff88] text-center">Agriculture</h3>
-          <p className="text-[#8b9bb4] text-base text-center">Get pest control, weather tips & market prices</p>
-        </div>
-        <div className="bg-[#252a3a] rounded-2xl p-8 flex flex-col items-center border border-white/10 shadow-lg hover:shadow-xl transition-shadow duration-200">
-          <div className="w-12 h-12 mb-4 flex items-center justify-center rounded-full bg-[#00ff88]/10">
-            <span className="text-2xl" role="img" aria-label="Health">🩺</span>
-          </div>
-          <h3 className="text-lg md:text-xl font-bold mb-2 text-[#00ff88] text-center">Health</h3>
-          <p className="text-[#8b9bb4] text-base text-center">Understand symptoms, access prevention info, find nearby clinics</p>
-        </div>
-        <div className="bg-[#252a3a] rounded-2xl p-8 flex flex-col items-center border border-white/10 shadow-lg hover:shadow-xl transition-shadow duration-200">
-          <div className="w-12 h-12 mb-4 flex items-center justify-center rounded-full bg-[#00ff88]/10">
-            <span className="text-2xl" role="img" aria-label="Education">📚</span>
-          </div>
-          <h3 className="text-lg md:text-xl font-bold mb-2 text-[#00ff88] text-center">Education</h3>
-          <p className="text-[#8b9bb4] text-base text-center">AI-powered answers to student questions in plain local language</p>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="max-w-5xl mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="bg-[#2d3548] rounded-2xl p-8 border border-white/10 shadow-xl flex flex-col gap-2 hover:shadow-2xl transition-shadow duration-200">
-          <h4 className="text-lg font-semibold text-[#00ff88] mb-2">Voice-Enabled</h4>
-          <p className="text-[#8b9bb4]">Speak to Ujuzi AI in Swahili—perfect for non-literate users</p>
-        </div>
-        <div className="bg-[#2d3548] rounded-2xl p-8 border border-white/10 shadow-xl flex flex-col gap-2 hover:shadow-2xl transition-shadow duration-200">
-          <h4 className="text-lg font-semibold text-[#00ff88] mb-2">Access AI. Without Changing Your Phone.</h4>
-          <div className="flex flex-col gap-2 mt-2">
-            <span className="text-[#8b9bb4] text-base md:text-lg">Works on any device—from feature phones to smartphones</span>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonial */}
-      <section className="max-w-3xl mx-auto px-4 py-12 text-center flex flex-col items-center">
-        <blockquote className="text-xl md:text-2xl font-semibold text-[#00ff88] mb-4 max-w-2xl">“Ujuzi AI could be the most important tool in making Africa’s digital future truly equitable.”</blockquote>
-      </section>
-
-      {/* How It Works - Redesigned */}
-      <section className="relative max-w-5xl mx-auto px-4 py-16 md:py-20 flex flex-col items-center bg-[#23273a] rounded-2xl border border-[#00ff88]/20 shadow-xl mb-12 overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none" style={{background: "radial-gradient(circle at 80% 20%, rgba(0,255,136,0.08) 0, transparent 70%)"}}></div>
-        <h3 className="text-2xl md:text-3xl font-bold text-white mb-10 text-center relative z-10">How It Works</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full relative z-10">
-          {howItWorksSteps.map((step, idx) => (
-            <div key={step.title} className="flex flex-col items-center bg-[#252a3a] rounded-xl p-8 border border-white/10 shadow-lg hover:shadow-2xl transition-shadow duration-200">
-              <div className="w-14 h-14 flex items-center justify-center rounded-full bg-[#00ff88]/15 mb-4 text-3xl">{step.icon}</div>
-              <h4 className="text-lg font-semibold text-[#00ff88] mb-2">{step.title}</h4>
-              <p className="text-[#8b9bb4] text-base text-center">{step.description}</p>
-              {idx < howItWorksSteps.length - 1 && (
-                <div className="hidden md:block absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-1/2 w-8 h-1 bg-gradient-to-r from-[#00ff88] to-transparent opacity-40" />
-              )}
+      <main>
+        <section className="hero">
+          <div className="container hero-grid">
+            <div>
+              <p className="eyebrow">SMS-based AI assistant</p>
+              <h1>AI that works on every phone.</h1>
+              <p className="lead">
+                Ujuzi AI answers questions by text message, in Swahili, Sheng and more.
+                No smartphone, mobile data or app required.
+              </p>
+              <div className="actions">
+                <a className="btn btn-primary" href="#how">See how it works</a>
+                <a className="btn btn-ghost" href="#contact">Partner with us</a>
+              </div>
+              <ul className="hero-points">
+                <li>Works on basic phones</li>
+                <li>Swahili and Sheng</li>
+                <li>Farming, learning, careers, health</li>
+              </ul>
             </div>
-          ))}
-        </div>
-      </section>
 
-      {/* Call to Action - Redesigned */}
-      <section id="try" className="max-w-3xl mx-auto px-4 py-14 md:py-20 text-center flex flex-col items-center bg-gradient-to-br from-[#23273a] to-[#252a3a] rounded-2xl border border-[#00ff88]/20 shadow-xl mb-12">
-        <h4 className="text-2xl md:text-3xl font-bold text-white mb-4">Experience Ujuzi AI</h4>
-        <p className="text-[#8b9bb4] text-lg md:text-xl leading-relaxed max-w-xl mx-auto mb-2">Experience the future of accessible knowledge for everyone, everywhere.</p>
-        <div className="flex flex-col gap-1 mt-2">
-          <span className="text-[#8b9bb4] text-base md:text-lg">No internet required</span>
-          <span className="text-[#8b9bb4] text-base md:text-lg">No apps to install</span>
-          <span className="text-[#8b9bb4] text-base md:text-lg">No English needed</span>
-        </div>
-      </section>
+            <div className="stage">
+              <Phone convo={active} />
+              <div className="chips" role="tablist" aria-label="Example topics">
+                {conversations.map((c) => (
+                  <button
+                    key={c.id}
+                    role="tab"
+                    aria-selected={active.id === c.id}
+                    className={`chip ${active.id === c.id ? "chip-active" : ""}`}
+                    onClick={() => setActive(c)}
+                  >
+                    {c.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
 
-      {/* Footer */}
-      <footer className="text-center text-[#6b7280] text-sm py-6 border-t border-white/10 mt-auto flex flex-col items-center gap-2">
-        <div className="flex flex-col md:flex-row gap-2 md:gap-6 items-center justify-center mb-1">
-          <a href="tel:+254795568537" className="hover:text-[#00ff88] transition-colors duration-150">📞 +254795568537</a>
-          <span className="hidden md:inline">|</span>
-          <a href="mailto:philipmachar788@gmail.com" className="hover:text-[#00ff88] transition-colors duration-150">✉ philipmachar788@gmail.com</a>
+        <section className="section section-tight">
+          <div className="container">
+            <div className="section-head">
+              <h2>Built for how people actually connect</h2>
+              <p>
+                Most AI tools assume a recent smartphone, a data bundle and fluency in English.
+                Ujuzi AI removes all three.
+              </p>
+            </div>
+            <div className="trio">
+              {[
+                ["phone", "Any phone", "Works on feature phones as well as smartphones. If it can send a text, it can use Ujuzi AI."],
+                ["signal", "No data needed", "Standard SMS means no mobile data, Wi-Fi or app downloads for the person asking."],
+                ["lang", "Local languages", "Ask in Swahili or Sheng and get the answer back in the same language."],
+              ].map(([icon, title, text]) => (
+                <div className="feature" key={title}>
+                  <span className="icon-box"><Icon name={icon} /></span>
+                  <h3>{title}</h3>
+                  <p>{text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="section section-alt" id="how">
+          <div className="container">
+            <div className="section-head">
+              <h2>How it works</h2>
+              <p>Four steps from question to answer, all over SMS.</p>
+            </div>
+            <ol className="steps">
+              {steps.map((s, i) => (
+                <li className="step" key={s.title}>
+                  <span className="step-num">{i + 1}</span>
+                  <h3>{s.title}</h3>
+                  <p>{s.text}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+
+        <section className="section" id="use-cases">
+          <div className="container">
+            <div className="section-head">
+              <h2>Practical knowledge, where it is needed</h2>
+              <p>Ujuzi AI is designed to help with everyday questions across four areas.</p>
+            </div>
+            <div className="cards">
+              {[
+                ["leaf", "Agriculture", "Crop care, pest prevention and seasonal guidance for farmers.", "Ninawezaje kuzuia wadudu kwenye mahindi?"],
+                ["book", "Education", "Clear explanations for students, in the language they think in.", "Eleza usanisinuru kwa maneno rahisi."],
+                ["briefcase", "Careers", "Guidance on CVs, applications and first steps into work.", "Nifanyeje CV nzuri ya kazi yangu ya kwanza?"],
+                ["heart", "Health information", "General, easy-to-understand health information. Not medical advice.", "Nifanye nini kujikinga na malaria?"],
+              ].map(([icon, title, text, example]) => (
+                <article className="card" key={title}>
+                  <span className="icon-box"><Icon name={icon} /></span>
+                  <h3>{title}</h3>
+                  <p>{text}</p>
+                  <p className="example">“{example}”</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="section section-alt" id="roadmap">
+          <div className="container">
+            <div className="section-head">
+              <h2>Roadmap</h2>
+              <p>What the service does today and where it is heading.</p>
+            </div>
+            <div className="road">
+              <div className="road-col">
+                <span className="badge badge-live">Available</span>
+                <h3>SMS questions and answers</h3>
+                <ul>
+                  <li>Ask by text message, no data or app</li>
+                  <li>Swahili and Sheng support</li>
+                  <li>Agriculture, education, careers and health topics</li>
+                </ul>
+              </div>
+              <div className="road-col">
+                <span className="badge badge-next">Planned</span>
+                <h3>Voice assistant</h3>
+                <ul>
+                  <li>Talk to Ujuzi AI by phone call</li>
+                  <li>Designed for people who cannot comfortably read or write</li>
+                  <li>More languages and regions</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="section" id="faq">
+          <div className="container narrow">
+            <div className="section-head">
+              <h2>Frequently asked questions</h2>
+            </div>
+            {faqs.map((f) => (
+              <details className="faq" key={f.q}>
+                <summary>{f.q}</summary>
+                <p>{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section className="cta" id="contact">
+          <div className="container cta-grid">
+            <div>
+              <h2>Bring Ujuzi AI to your community</h2>
+              <p>
+                We work with organisations that want to put useful knowledge in more
+                people's hands. Tell us about your programme and we will get back to you.
+              </p>
+            </div>
+            <div className="cta-card">
+              <a className="btn btn-accent" href={`mailto:${EMAIL}?subject=Ujuzi%20AI%20enquiry`}>
+                Email our team
+              </a>
+              <dl>
+                <div><dt>Email</dt><dd><a href={`mailto:${EMAIL}`}>{EMAIL}</a></dd></div>
+                <div><dt>Phone</dt><dd><a href={`tel:${PHONE_LINK}`}>{PHONE_DISPLAY}</a></dd></div>
+                <div><dt>Based in</dt><dd>Kenya</dd></div>
+              </dl>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer className="footer">
+        <div className="container footer-grid">
+          <div>
+            <Logo light />
+            <p className="footer-tag">AI for everyone, everywhere.</p>
+          </div>
+          <nav aria-label="Footer">
+            <a href="#how">How it works</a>
+            <a href="#use-cases">Use cases</a>
+            <a href="#roadmap">Roadmap</a>
+            <a href="#contact">Contact</a>
+          </nav>
         </div>
-        <div>&copy; {new Date().getFullYear()} Ujuzi AI. All rights reserved.</div>
+        <div className="container footer-bottom">
+          <span>© {new Date().getFullYear()} Ujuzi AI. All rights reserved.</span>
+          <span>Powered by Africa's Talking and OpenAI.</span>
+        </div>
       </footer>
     </div>
   );
