@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./App.css";
 
-const EMAIL = "philipmachar788@gmail.com";
+const EMAIL = "philipmachar@ujuziai.com";
 const PHONE_DISPLAY = "+254 795 568 537";
 const PHONE_LINK = "+254795568537";
 
